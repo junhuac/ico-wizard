@@ -2,6 +2,7 @@ import { incorrectNetworkAlert, noMetaMaskAlert, invalidNetworkIDAlert } from '.
 import { CHAINS } from './constants'
 import { crowdsaleStore, generalStore, web3Store } from '../stores'
 import { fetchFile } from './utils'
+import deploymentStore from '../stores/DeploymentStore'
 
 const DEPLOY_CONTRACT = 1
 const CALL_METHOD = 2
@@ -273,19 +274,13 @@ export function registerCrowdsaleAddress (contractStore) {
   return Promise.all([whenRegistryAddress, whenAccount])
     .then(([registryAddress, account]) => {
       const registry = new web3.eth.Contract(toJS(registryAbi), registryAddress)
-      const opts = { from: account }
+      const opts = { from: account, gasLimit: 100000 }
 
       return registry.methods
         .add(crowdsaleAddress)
-        .estimateGas(opts)
-        .then(estimatedGas => {
-          opts.gasLimit = 100000
-
-          return registry.methods
-            .add(crowdsaleAddress)
-            .send(opts)
-        })
+        .send(opts)
     })
+    .then(() => deploymentStore.setAsSuccessful('registerCrowdsaleAddress'))
 }
 
 function getRegistryAbi () {

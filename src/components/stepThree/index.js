@@ -173,8 +173,8 @@ export class stepThree extends React.Component {
               }, 0)
             }
 
-            //return warningOnMainnetAlert(tiersCount, priceSelected, reservedCount, whitelistCount, this.goToDeploymentStage)
-            return mainnetIsOnMaintenance()
+            return warningOnMainnetAlert(tiersCount, priceSelected, reservedCount, whitelistCount, this.goToDeploymentStage)
+            // return mainnetIsOnMaintenance()
           }
           this.goToDeploymentStage()
         })
